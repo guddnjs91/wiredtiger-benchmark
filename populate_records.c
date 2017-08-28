@@ -13,8 +13,7 @@ void wt_shutdown(WT_CONNECTION *conn);
 void* worker(void *arg);
 
 
-int main(int argc, char* argv[] )
-{
+int main(int argc, char* argv[]) {
 	WT_CONNECTION *conn;
 	WT_SESSION *session;
 
@@ -30,7 +29,7 @@ int main(int argc, char* argv[] )
 	char ch;
 
 	int num_records = 100000; /*default is 10000*/
-	int num_index =42; /* num of index trees ( = tables) .. */
+	int num_index = 42; /* num of index trees ( = tables) .. */
 	int record_size = 1000; /* ten fields, each field has 100B data*/
 
 	struct thread_args *t_args;
@@ -40,17 +39,18 @@ int main(int argc, char* argv[] )
     home = "WT_DATA";
 	ret = system("rm -rf WT_DATA && mkdir WT_DATA");
 
-	while ((ch = __wt_getopt( argv[0], argc, argv, "r:i:s:")) != EOF)
-	{
-			switch (ch) 
-			{
-				case 'r': //num of records
-					num_records =  atoi( __wt_optarg );
-					break;
-				case 'i': //num of indice
-					num_index =  atoi( __wt_optarg );
-					break;
-			}
+	while ((ch = __wt_getopt( argv[0], argc, argv, "r:i:s:")) != EOF) {
+        switch (ch) {
+            case 'r': //num of records
+                num_records =  atoi(__wt_optarg);
+				break;
+			case 'i': //num of indice
+				num_index =  atoi(__wt_optarg);
+				break;
+            case 's': // record size
+                record_size = atoi(__wt_optarg);
+                break;
+		}
 	}
 
 	printf( "num records : %d\n", num_records );
@@ -59,15 +59,17 @@ int main(int argc, char* argv[] )
 
 	t_args = (struct thread_args*) malloc( sizeof(struct thread_args));
 
-	
 	snprintf(config, sizeof(config),
-					"create,log=enabled, transaction_sync=enabled, statistics=(all),error_prefix=\"%s\",%s%s", 
+					"create,log=enabled, transaction_sync=enabled,\
+                    statistics=(all),error_prefix=\"%s\",%s%s", 
 					argv[0],
 					config_open == NULL ? "" : ",",
 					config_open == NULL ? "" : config_open);
 
 	ret = wiredtiger_open(home, NULL, config, &conn);
-	if( ret ) fprintf(stderr, "wiredtiger_open: %s\n", wiredtiger_strerror(ret));
+	if (ret) {
+        fprintf(stderr, "wiredtiger_open: %s\n", wiredtiger_strerror(ret));
+    }
 
 	memset( t_args->fname, 0x00, sizeof(t_args->fname)); 
 	sprintf( t_args->fname, uri_prefix, 0 ); 
@@ -104,7 +106,12 @@ void* worker(void *arg)
 	}
 }
 
-void populate_record(const char *name, WT_CONNECTION *conn, int num_records , int rec_size )
+void
+populate_record(
+    const char *name,
+    WT_CONNECTION *conn,
+    int num_records,
+    int rec_size)
 {
 	WT_SESSION *session; 
 	WT_CURSOR *cursor;
