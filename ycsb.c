@@ -11,7 +11,7 @@ int exit_flag = 0;
 int print_flag = 0;
 int tx_cnt = 0;
 
-int update_query_pct = 50; /*update trx pct default:50*/
+int update_query_pct = 100; /*update trx pct default:50*/
 struct thread_args *t_args;
 
 int main(int argc, char* argv[] )
@@ -24,14 +24,14 @@ int main(int argc, char* argv[] )
 
 	char* home;
 	char config[512];
-	char* config_open = "cache_size=61440MB";
+	char* config_open = "cache_size=64MB";
 	char* uri_prefix = "table:wt.%03d";
 
 	char ch;
 
-	int num_records = 100000;
-	int num_index =42; 
-	int record_size = 1000; /* ten fields, each field has 100B data*/
+	int num_records = 10000;
+	int num_index =10; 
+	int record_size = 100; /* ten fields, each field has 100B data*/
 	int thread_num = 1;
 
 //	pthread_t *tids;

@@ -28,8 +28,8 @@ int main(int argc, char* argv[]) {
 
 	char ch;
 
-	int num_records = 100000; /*default is 10000*/
-	int num_index = 42; /* num of index trees ( = tables) .. */
+	int num_records = 10000; /*default is 10000*/
+	int num_index = 10; /* num of index trees ( = tables) .. */
 	int record_size = 1000; /* ten fields, each field has 100B data*/
 
 	struct thread_args *t_args;
@@ -50,6 +50,12 @@ int main(int argc, char* argv[]) {
             case 's': // record size
                 record_size = atoi(__wt_optarg);
                 break;
+            default: 
+                printf("populate_records [options]\n");
+                printf("-r\tthe number of records\n");
+                printf("-i\tthe number of tables\n");
+                printf("-s\tthe record size\n");
+                exit( EXIT_FAILURE);
 		}
 	}
 
